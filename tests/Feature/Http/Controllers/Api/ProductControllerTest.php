@@ -61,6 +61,31 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
+    public function will_fail_with_validation_errors_when_creating_a_product(){
+
+        $product = $this->create('Models\\Product\\Product');
+
+        $response = $this->actingAs($this->create('User',[],false),'api')->json('post', '/api/products/',[
+            'name' => $product->name,
+            'slug' => $product->slug,
+            'price' => 'dsd'
+        ]);
+
+        $response->assertStatus(422)
+                ->assertExactJson([
+                    'message'=> 'The given data was invalid.',
+                    'errors' =>[
+                        'name' => ['The name has already been taken.'],
+                        'slug' => ['The slug has already been taken.'],
+                        'price' => ['The price must be an integer.']
+                    ]
+                ]);
+
+    }
+
+    /**
+     * @test
+     */
     public function can_create_a_product(){
 
         $faker = Factory::create();
@@ -125,6 +150,22 @@ class ProductControllerTest extends TestCase
 
         $response = $this->actingAs($this->create('User', [], false),'api')->json('PUT','/api/products/update/-1');
         $response->assertStatus(404);
+
+    }
+    /**
+     * @test
+     */
+    public function will_fail_with_validation_errors_when_updating_a_product(){
+
+        $product0 = $this->create('Models\\Product\\Product');
+        $product1 = $this->create('Models\\Product\\Product');
+
+        $response = $this->actingAs($this->create('User',[],false),'api')->json('PUT',"/api/products/update/$product1->id",[
+            'name'=> $product1->name,
+            'price' => 'dsds'
+        ]);
+
+        $response->assertStatus(422);
 
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Product;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Product\ProductStoreRequest;
+use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Models\Product\Product;
 use App\Http\Resources\Product as ProductResources;
 use App\Http\Resources\ProductCollection;
@@ -14,7 +16,7 @@ class ProductController extends Controller
         return new ProductCollection(Product::paginate(25));
     }
 
-    public function store(Request $request){
+    public function store(ProductStoreRequest $request){
         $product = Product::create($request->all());
         return response()->json( new ProductResources($product),201);
     }
@@ -24,7 +26,7 @@ class ProductController extends Controller
         return response()->json( new ProductResources($product),200);
     }
 
-    public function update(Request $request, int $id){
+    public function update(ProductUpdateRequest $request, int $id){
         $product = Product::findOrFail($id);
         $product->update($request->all());
         return response()->json( new ProductResources($product));

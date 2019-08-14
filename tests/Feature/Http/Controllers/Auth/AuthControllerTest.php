@@ -9,6 +9,13 @@ class AuthControllerTest extends TestCase {
 
     use RefreshDatabase;
 
+    protected function setUp(): void{
+
+        parent::setUp();
+        $this->artisan('passport:install');
+
+    }
+
     /**
      * @test
      */

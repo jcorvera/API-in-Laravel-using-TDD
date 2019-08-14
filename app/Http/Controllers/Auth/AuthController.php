@@ -11,16 +11,17 @@ class AuthController extends Controller{
 
     public function store(Request $request){
 
+        $token = null;
+
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
 
-            $user = User::where('email',$request->email)->get();
-            $token = $user->createToken($request->email)->accessToken;
+            $token = User::whereEmail($request->email)->first()->createToken($request->email)->accessToken;
 
+            return response()->json(['token'=>$token, 'user'=> $token]);
+        }
+        else{
             return response()->json(['token'=>$token]);
         }
-        // else{
-            // return response()->json(['token'=>$token]);
-        // }
 
     }
 }
