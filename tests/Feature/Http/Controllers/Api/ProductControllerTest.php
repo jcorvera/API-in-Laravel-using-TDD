@@ -16,8 +16,8 @@ class ProductControllerTest extends TestCase
         /**
      * @test
      */
-    public function non_authenticated_users_cannot_access_the_following_endpoints_for_the_products_api(){
-
+    public function non_authenticated_users_cannot_access_the_following_endpoints_for_the_products_api()
+    {
         $index = $this->json('GET','/api/products/');
         $index->assertStatus(401);
 
@@ -32,14 +32,13 @@ class ProductControllerTest extends TestCase
 
         $destroy = $this->json('DELETE','/api/products/delete/1');
         $destroy->assertStatus(401);
-
     }
 
     /**
      * @test
      */
-    public function can_return_a_collection_of_paginated_products(){
-
+    public function can_return_a_collection_of_paginated_products()
+    {
         $product0 = $this->create('Models\\Product\\Product');
         $product1 = $this->create('Models\\Product\\Product');
         $product2 = $this->create('Models\\Product\\Product');
@@ -63,8 +62,8 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
-    public function will_fail_with_validation_errors_when_creating_a_product(){
-
+    public function will_fail_with_validation_errors_when_creating_a_product()
+    {
         $product = $this->create('Models\\Product\\Product');
 
         $response = $this->actingAs($this->create('User',[],false),'api')->json('post', '/api/products/',[
@@ -82,14 +81,13 @@ class ProductControllerTest extends TestCase
                         'price' => ['The price must be an integer.']
                     ]
                 ]);
-
     }
 
     /**
      * @test
      */
-    public function can_create_a_product(){
-
+    public function can_create_a_product()
+    {
         $faker = Factory::create();
 
         $response = $this->actingAs($this->create('User', [], false),'api')->json('POST','/api/products',[
@@ -118,8 +116,8 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
-    public function can_create_a_product_with_image(){
-
+    public function can_create_a_product_with_image()
+    {
         $faker = Factory::create();
 
         Storage::fake('public');
@@ -154,7 +152,8 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
-    public function will_fail_with_a_404_if_products_not_found(){
+    public function will_fail_with_a_404_if_products_not_found()
+    {
         $response = $this->actingAs($this->create('User', [], false),'api')->json('GET','/api/products/show/-1');
         $response->assertStatus(404);
     }
@@ -162,7 +161,8 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
-    public function can_return_a_product(){
+    public function can_return_a_product()
+    {
         //Given
         $product = $this->create('Models\\Product\\Product');
         //When
@@ -183,17 +183,16 @@ class ProductControllerTest extends TestCase
     /**
      * @test
      */
-    public function will_fail_with_a_404_if_product_we_want_to_update_is_not_found(){
-
+    public function will_fail_with_a_404_if_product_we_want_to_update_is_not_found()
+    {
         $response = $this->actingAs($this->create('User', [], false),'api')->json('PUT','/api/products/update/-1');
         $response->assertStatus(404);
-
     }
     /**
      * @test
      */
-    public function will_fail_with_validation_errors_when_updating_a_product(){
-
+    public function will_fail_with_validation_errors_when_updating_a_product()
+    {
         $product0 = $this->create('Models\\Product\\Product');
         $product1 = $this->create('Models\\Product\\Product');
 
@@ -203,14 +202,13 @@ class ProductControllerTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-
     }
 
     /**
      * @test
      */
-    public function can_update_a_product(){
-
+    public function can_update_a_product()
+    {
         $product = $this->create('Models\\Product\\Product');
 
         $response = $this->actingAs($this->create('User', [], false),'api')->json('PUT', "/api/products/update/$product->id",[
@@ -243,8 +241,8 @@ class ProductControllerTest extends TestCase
         /**
      * @test
      */
-    public function can_update_a_product_with_image(){
-
+    public function can_update_a_product_with_image()
+    {
         $product = $this->create('Models\\Product\\Product');
 
         Storage::fake('public');
@@ -283,22 +281,19 @@ class ProductControllerTest extends TestCase
       /**
      * @test
      */
-    public function will_fail_with_a_404_if_product_we_want_to_delete_is_not_found(){
-
+    public function will_fail_with_a_404_if_product_we_want_to_delete_is_not_found()
+    {
         $response = $this->actingAs($this->create('User', [], false),'api')->json('DELETE','/api/products/delete/-1');
         $response->assertStatus(404);
-
     }
 
     /**
      * @test
      */
-    public function can_delete_a_product(){
-
+    public function can_delete_a_product()
+    {
         $product = $this->create('Models\\Product\\Product');
-
         $response = $this->actingAs($this->create('User', [], false),'api')->json('DELETE', "/api/products/delete/$product->id");
-
         $response->assertStatus(204);
         $this->assertDatabaseMissing('products',['id'=> $product->id]);
     }

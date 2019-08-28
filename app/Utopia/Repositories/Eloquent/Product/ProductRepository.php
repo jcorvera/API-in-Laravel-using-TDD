@@ -17,14 +17,16 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
         parent::__construct('Models\\Product\\Product');
     }
 
-    public function create(ProductStoreRequest $request){
-
-        if($request->hasFile('image')){
+    public function create(ProductStoreRequest $request)
+    {
+        if($request->hasFile('image'))
+        {
             $path = $request->file('image')->store('product_images','public');
             $image = Image::create([
                 'path' => $path
             ])->id;
-        }else{
+        }else
+        {
             $image = null;
         }
 
@@ -37,14 +39,16 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
 
     }
 
-    public function update(ProductUpdateRequest $request, Product $product){
-
-        if($request->hasFile('image')){
+    public function update(ProductUpdateRequest $request, Product $product)
+    {
+        if($request->hasFile('image'))
+        {
             $path = $request->file('image')->store('product_images','public');
             $image = Image::create([
                 'path' => $path
             ])->id;
-        }else{
+        }else
+        {
             $image = $product->image_id;
         }
 
@@ -58,7 +62,8 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
         return $product;
     }
 
-    public function destroy(Product $product){
+    public function destroy(Product $product)
+    {
         $product->delete();
     }
 

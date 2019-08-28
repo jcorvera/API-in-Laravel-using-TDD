@@ -10,18 +10,17 @@ class AuthControllerTest extends TestCase {
 
     use RefreshDatabase;
 
-    protected function setUp(): void{
-
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->artisan('passport:install');
-
     }
 
     /**
      * @test
      */
-    public function can_authenticate(){
-
+    public function can_authenticate()
+    {
         $response = $this->json('POST','/auth/token',[
             'email' => $this->create('User',[],false)->email,
             'password' => 'password'

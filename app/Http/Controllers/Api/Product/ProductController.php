@@ -23,10 +23,8 @@ class ProductController extends Controller
     }
 
     public function store(ProductStoreRequest $request){
-
         $product = $this->productRepository->create($request);
         return response()->json( new ProductResources($product),201);
-
     }
 
     public function show(int $id){
@@ -35,11 +33,9 @@ class ProductController extends Controller
     }
 
     public function update(ProductUpdateRequest $request, int $id){
-
         $product = $this->productRepository->findOrFail($id);
         $product = $this->productRepository->update($request, $product);
         return response()->json( new ProductResources($product));
-
     }
 
     public function destroy(int $id){

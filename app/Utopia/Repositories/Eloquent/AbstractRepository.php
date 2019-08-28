@@ -13,11 +13,13 @@ class AbstractRepository implements AbstractRepositoryInterface{
         $this->model = "App\\$model";
     }
 
-    public function findOrFail($id){
+    public function findOrFail($id)
+    {
         return $this->model::findOrFail($id);
     }
 
-    public function paginate(){
+    public function paginate()
+    {
         return $this->model::paginate();
     }
 
