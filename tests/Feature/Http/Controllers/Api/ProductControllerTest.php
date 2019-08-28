@@ -4,10 +4,10 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use Faker\Factory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 
 class ProductControllerTest extends TestCase
 {

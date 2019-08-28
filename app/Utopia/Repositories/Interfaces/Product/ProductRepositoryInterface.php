@@ -2,9 +2,9 @@
 
 namespace App\Utopia\Repositories\Interfaces\Product;
 
+use App\Models\Product\Product;
 use App\Http\Requests\Product\ProductStoreRequest;
 use App\Http\Requests\Product\ProductUpdateRequest;
-use App\Models\Product\Product;
 
 interface ProductRepositoryInterface{
 

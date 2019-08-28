@@ -8,8 +8,8 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function create(string $model, array $attributes=[], bool $resource = true){
-
+    public function create(string $model, array $attributes=[], bool $resource = true)
+    {
         $resourceModel = factory("App\\$model")->create($attributes);
 
         if(!$resource)
@@ -18,6 +18,5 @@ abstract class TestCase extends BaseTestCase
             $resourceClass = "App\\Http\\Resources\\Product";
 
         return new $resourceClass($resourceModel);
-
     }
 }
