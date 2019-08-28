@@ -4,7 +4,7 @@
 * :white_check_mark: Green -
 * :raised_hands: Refactor -
 
-In this proyect I user Repository Pattern
+In this proyect I used Repository Pattern
 
 Entities:
 * Product
