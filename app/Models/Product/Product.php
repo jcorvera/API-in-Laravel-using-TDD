@@ -16,4 +16,10 @@ class Product extends Model
         'slug',
         'price'
     ];
+
+    public function images()
+    {
+        return $this->hasOne('App\Models\Product\Image');
+    }
+
 }
