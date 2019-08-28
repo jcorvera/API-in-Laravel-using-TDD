@@ -18,10 +18,24 @@ class AuthController extends Controller{
             $token = User::whereEmail($request->email)->first()->createToken($request->email)->accessToken;
 
             return response()->json(['token'=>$token, 'user'=> $token]);
-        }
-        else{
+        } else{
             return response()->json(['token'=>$token]);
         }
 
+    }
+
+    public function redirect(String $provider){
+
+        return Socialite::driver($provider)->redirect();
+
+    }
+
+    public function callback(String $provider){
+
+        $user = Socialite::driver($provider)->user();
+        \Log::info('user',[$user]);
+        \Log::info($user->token);
+
+        return redirect()->away("http://localhost:8000?token=$user->token");
     }
 }

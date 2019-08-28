@@ -6,6 +6,8 @@ use Faker\Factory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ProductControllerTest extends TestCase
 {
@@ -96,17 +98,51 @@ class ProductControllerTest extends TestCase
             'price' => $price = random_int(10,100),
         ]);
 
-        \Log::info(1,[$response->getContent()]);
-
         $response
         ->assertJsonStructure([
-            'id','name','slug','price','created_at'
+            'id','image_id','name','slug','price','created_at'
         ])->assertJson([
             'name' => $name,
             'slug' => str_slug($name),
             'price' => $price,
         ])
         ->assertStatus(201);
+
+        $this->assertDatabaseHas('products',[
+            'name'=> $name,
+            'slug'=> str_slug($name),
+            'price' => $price,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_create_a_product_with_image(){
+
+        $faker = Factory::create();
+
+        Storage::fake('public');
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $response = $this->actingAs($this->create('User', [], false),'api')->json('POST','/api/products',[
+            'name' => $name = $faker->company,
+            'slug' => str_slug($name),
+            'price' => $price = random_int(10,100),
+            'image' => $image
+        ]);
+
+        $response
+        ->assertJsonStructure([
+            'id','image_id','name','slug','price','created_at'
+        ])->assertJson([
+            'name' => $name,
+            'slug' => str_slug($name),
+            'price' => $price,
+        ])
+        ->assertStatus(201);
+
+        Storage::disk('public')->assertExists("product_images/{$image->hashName()}");
 
         $this->assertDatabaseHas('products',[
             'name'=> $name,
@@ -135,6 +171,7 @@ class ProductControllerTest extends TestCase
         $response
         ->assertExactJson([
             'id' => $product->id,
+            'image_id' => $product->image_id,
             'name' => $product->name,
             'slug' => $product->slug,
             'price' => $product->price,
@@ -178,15 +215,16 @@ class ProductControllerTest extends TestCase
 
         $response = $this->actingAs($this->create('User', [], false),'api')->json('PUT', "/api/products/update/$product->id",[
             'name' => 'Nombre de la persona',
-            'slug' => 'Nombre de mi perosns',
+            'slug' => str_slug('Nombre de la persona'),
             'price' => $product->price + 10,
         ]);
 
         $response
         ->assertExactJson([
             'id' =>  $product->id,
+            'image_id' => null,
             'name' => 'Nombre de la persona',
-            'slug' => 'Nombre de mi perosns',
+            'slug' => str_slug('Nombre de la persona'),
             'price' => $product->price + 10,
             'created_at' => (string) $product->created_at
         ])
@@ -194,8 +232,49 @@ class ProductControllerTest extends TestCase
 
         $this->assertDatabaseHas('products',[
             'id' =>  $product->id,
+            'image_id' => null,
             'name' => 'Nombre de la persona',
-            'slug' => 'Nombre de mi perosns',
+            'slug' => str_slug('Nombre de la persona'),
+            'price' => $product->price + 10,
+            'created_at' => (string) $product->created_at
+        ]);
+    }
+
+        /**
+     * @test
+     */
+    public function can_update_a_product_with_image(){
+
+        $product = $this->create('Models\\Product\\Product');
+
+        Storage::fake('public');
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $response = $this->actingAs($this->create('User', [], false),'api')->json('PUT', "/api/products/update/$product->id",[
+            'name' => 'Nombre de la persona',
+            'slug' => str_slug('Nombre de la persona'),
+            'price' => $product->price + 10,
+            'image'=> $image
+        ]);
+
+        $response
+        ->assertExactJson([
+            'id' =>  $product->id,
+            'image_id' => json_decode($response->getContent())->image_id,
+            'name' => 'Nombre de la persona',
+            'slug' => str_slug('Nombre de la persona'),
+            'price' => $product->price + 10,
+            'created_at' => (string) $product->created_at
+        ])
+        ->assertStatus(200);
+
+        Storage::disk('public')->assertExists("product_images/{$image->hashName()}");
+
+        $this->assertDatabaseHas('products',[
+            'id' =>  $product->id,
+            'image_id' => json_decode($response->getContent())->image_id,
+            'name' => 'Nombre de la persona',
+            'slug' => str_slug('Nombre de la persona'),
             'price' => $product->price + 10,
             'created_at' => (string) $product->created_at
         ]);
